@@ -1,7 +1,7 @@
 
 #include <cstdlib>
 // cin << nump << numt << dim;
-
+int main() {
 int n = 2;
 double mat [n][n];
 
@@ -15,4 +15,5 @@ for (int i; i < n; i++) {
       NoXbjQ */
       mat[i][j] = (double)rand() / (double)RAND_MAX;
     }
+}
 }
