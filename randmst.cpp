@@ -40,6 +40,7 @@ int one_dim(int n) {
         printf("%lf \n", mat[i][j]);
       }
   }
+  return mat;
 }
 
 int two_dim(int n) {
@@ -58,6 +59,7 @@ int two_dim(int n) {
         mat[i][j] = two_distance(V[i][0],V[j][0],V[i][1],V[j][1]);
       }
     }
+    return mat;
 }
 
 int three_dim(int n) {
@@ -70,7 +72,6 @@ int three_dim(int n) {
     (x,y,z) = (double)rand() / (double)RAND_MAX, (double)rand() / (double)RAND_MAX,(double)rand() / (double)RAND_MAX;
       V.pushback((x,y,z))
   }
-
   for (int i; i <= n; i++) {
       for (int j; j <= n; j++) {
         for(int k; k<= n; k++) {
@@ -78,6 +79,7 @@ int three_dim(int n) {
         }
       }
   }
+  return mat;
 }
 
 }
