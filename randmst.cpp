@@ -54,7 +54,7 @@ int two_dim(int n) {
 
   for (int i; i <= n; i++) {
       for (int j; j <= n; j++) {
-        mat[i][j] = distance(V[i][0],V[j][0],V[i][1],V[j][1]);
+        mat[i][j] = two_distance(V[i][0],V[j][0],V[i][1],V[j][1]);
       }
     }
 }
@@ -72,7 +72,7 @@ int three_dim(int n) {
   for (int i; i <= n; i++) {
       for (int j; j <= n; j++) {
         for(int k; k<= n; k++) {
-          mat[i][j] = distance(V[i][0],V[j][0],V[k][0],V[i][1],V[j][1],V[k][1]);
+          mat[i][j] = three_distance(V[i][0],V[j][0],V[k][0],V[i][1],V[j][1],V[k][1]);
         }
       }
   }
