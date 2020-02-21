@@ -45,7 +45,8 @@ int one_dim(int n) {
 int two_dim(int n) {
   // Creates vector to keep track of vertex coordinates
   vector<int> V;
-
+  //Initiliza distance array
+  double mat [n][n];
   // Fill Vertex vector with random tuples
   for (int i; i<= n; i++) {
     (x,y) = (double)rand() / (double)RAND_MAX, (double)rand() / (double)RAND_MAX;
@@ -62,7 +63,8 @@ int two_dim(int n) {
 int three_dim(int n) {
   // Creates vector to keep track of vertex coordinates
   vector<int> V;
-
+  //Initiliza distance array
+  double mat [n][n];
   // Fill Vertex vector with random tuples
   for (int i; i<= n; i++) {
     (x,y,z) = (double)rand() / (double)RAND_MAX, (double)rand() / (double)RAND_MAX,(double)rand() / (double)RAND_MAX;
