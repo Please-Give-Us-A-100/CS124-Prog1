@@ -2,12 +2,12 @@
 #include <cstdlib>
 #include <cstdio>
 #include <vector>
-#include <bits/stdc++.h>
+#include <cmath>
+//#include <bits/stdc++.h>
+//what exactly are you using from this header file? i dont think we should include this
+//because it messes with the runtime for our program 
 using namespace std;
 
-// cin << nump << numt << dim;
-int main() {
-int n = 2;
 
 // Function to calculate distance between two points
 // Found on https://www.geeksforgeeks.org/program-calculate-distance-two-points/
@@ -19,14 +19,14 @@ float two_distance(int x1, int y1, int x2, int y2)
 }
 
 // Function to calculate distance between three points
-float three_distance(int x1, int y1, int x2, int y2)
+float three_distance(int x1, int y1, int z1, int x2, int y2, int z2)
 {
     // Calculating distance
     return sqrt(pow(x2 - x1, 2) +
                 pow(y2 - y1, 2) + pow(z2 - z1, 2) * 1.0);
 }
 
-int one_dim(int n) {
+double * one_dim(int n) {
   double mat [n][n];
   for (int i; i <= n; i++) {
       for (int j; j <= n; j++) {
@@ -40,18 +40,19 @@ int one_dim(int n) {
         printf("%lf \n", mat[i][j]);
       }
   }
-  return mat;
+  return *mat; 
 }
 
-int two_dim(int n) {
+double * two_dim(int n) {
   // Creates vector to keep track of vertex coordinates
   vector<int> V;
   //Initiliza distance array
   double mat [n][n];
   // Fill Vertex vector with random tuples
   for (int i; i<= n; i++) {
-    (x,y) = (double)rand() / (double)RAND_MAX, (double)rand() / (double)RAND_MAX;
-      V.pushback((x,y))
+	double x = (double)rand() / (double)RAND_MAX; 
+    double y = (double)rand() / (double)RAND_MAX;
+    V.push_back((x,y));
   }
 
   for (int i; i <= n; i++) {
@@ -59,18 +60,20 @@ int two_dim(int n) {
         mat[i][j] = two_distance(V[i][0],V[j][0],V[i][1],V[j][1]);
       }
     }
-    return mat;
+    return *mat;
 }
 
-int three_dim(int n) {
+double* three_dim(int n) {
   // Creates vector to keep track of vertex coordinates
   vector<int> V;
   //Initiliza distance array
   double mat [n][n];
   // Fill Vertex vector with random tuples
   for (int i; i<= n; i++) {
-    (x,y,z) = (double)rand() / (double)RAND_MAX, (double)rand() / (double)RAND_MAX,(double)rand() / (double)RAND_MAX;
-      V.pushback((x,y,z))
+    double x = (double)rand() / (double)RAND_MAX;
+    double y = (double)rand() / (double)RAND_MAX;
+    double z = (double)rand() / (double)RAND_MAX;
+    V.push_back((x,y,z));
   }
   for (int i; i <= n; i++) {
       for (int j; j <= n; j++) {
@@ -82,4 +85,12 @@ int three_dim(int n) {
   return mat;
 }
 
+// cin << nump << numt << dim;
+int main() {
+int n = 2;
+one_dim(n); 
+two_dim(n); 
+three_dim(n); 
 }
+
+
