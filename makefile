@@ -1,5 +1,8 @@
- all = randmst.cpp
- 	gcc -g -Wall -o randmst randmst.cpp
+output: randmst.o
+	g++ randmst.o -o randmst
 
- clean:
- $(RM) randmst 
+randmst.o: randmst.cpp
+	g++ -c randmst.cpp
+
+clean: 
+	rm *.o randmst 
