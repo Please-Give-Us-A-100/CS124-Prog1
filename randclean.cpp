@@ -1,12 +1,16 @@
 #include <iostream>
+#include <map>
+#include <string>
+#include <list>
+#include <tuple>
+#include <vector> 
 #include <cstdlib>
 #include <cstdio>
+#include <cmath>
+#include <functional>
 #include <random>
 #include <time.h>
 #include <limits>
-#include <stdio.h>
-#include <string.h>
-#include<ctime>
 using namespace std; 
 
 struct Point{
@@ -21,7 +25,7 @@ float distance(double x1, double y1, double z1, double a1, double x2, double y2,
 }
 
 float prim(int n, int d) { 
-	std::time_t start_time = std::time(0); 
+
 	// Array of vertices  
 	struct Point arr[n]; 
 	 
@@ -67,8 +71,7 @@ float prim(int n, int d) {
 					dist = (float)rand() / RAND_MAX; 
 				}
 				else {
-					dist = distance(arr[i].x, arr[i].y, arr[i].z, arr[i].a, 
-					arr[niq].x, arr[niq].y, arr[niq].z, arr[niq].a); 
+					dist = distance(arr[i].x, arr[i].y, arr[i].z, arr[i].a, arr[niq].x, arr[niq].y, arr[niq].z, arr[niq].a); 
 				}
 				//cout << "distance between " << niq << " and " << i << " is " << dist << "\n";
 				if (dist < arr[i].weight)
@@ -91,32 +94,21 @@ float prim(int n, int d) {
 			smallest = 20.0; 
 		}		
 	}
-	std::time_t end_time = std::time(0); 
-	cout << "time spent " << end_time - start_time << "\n"; 
 	return total; 
 } 
 
-int main(int argc, char *argv[]) {
-	//if (argc != 3) return -1;
-	int n, t, d; 
-
-    n = atoi(argv[2]);
-    t = atoi(argv[3]);
-    d = atoi(argv[4]); 
-   // cout << n <<  " trials: " << t << " dim: "<< d << "\n"; 
-    //cin >> n >> t >> d; 
-	//int trials = 5; 
-
+int main() {
+	int n =  1024; 
+	int trials = 5; 
+	int d = 2; 
 	/*float tot; 
 	for (int i = 0; i < trials; i++){
 		tot += prim_2d(n); 
 	}
 	float avg = tot/trials; 
 	cout << "avergae \n" << avg <<"\n"; */
-	//int a = 1024; 
-	//int b = 2; 
+	
 	float sum = prim(n, d); 
-	cout << "sum: " << sum << "\n";
-	//printf("final %f\n", sum);
+	cout << "sum: " << sum << "\n"; 
 	return 0; 
 }
