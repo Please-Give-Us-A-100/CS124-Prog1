@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
 
     float time = (float) (end_time - start_time) / 5.0; 
     
-    cout << "AVG: " << sum/5.0 << "\n" << "AVG TIME: " << time << "\n"; 
+    cout << "AVG WEIGHT: " << sum/5.0 << "\n" << "AVG TIME: " << time << "\n"; 
     
 	return 0; 
 }
