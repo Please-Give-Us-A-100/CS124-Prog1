@@ -108,7 +108,6 @@ int main(int argc, char *argv[]) {
 
     float sum; 
     
-    float c, f, e; 
     std::time_t start_time = std::time(0); 
     for (int p = 0; p < t; p++){
     	float * a = (float *) malloc(sizeof(float));
