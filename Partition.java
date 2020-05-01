@@ -12,34 +12,30 @@ import java.util.Random;
 
 
 public class Partition {
+	// Karmarkar-Karp Algorithm 
 	public long kk(ArrayList<Long> list) {
 		long max2 = 1;
 		long max1 = 0; 
 		while (max2 > 0) {
 			max1 = Collections.max(list); 
-			//System.out.println("max of list is: " + max1);
 			int index1 = list.indexOf(max1);
 			list.set(index1, Long.valueOf(0)); 
 			max2 = Collections.max(list); 
-			//System.out.println( "next max of list is: " + max2);
 			int index2 = list.indexOf(max2);
 			long replace = max1 - max2; 
 			list.set(index1, replace); 
 			list.set(index2, Long.valueOf(0)); 
 		}
 		return max1; 
-		
-
-
-
 	}
 
+	// Residue algorithm -- calculates residual given a list and a solution
+	// set based on the solution set partitioning. 
 	public long residue(ArrayList<Long> list, ArrayList<Long> soln) {
 		int n = list.size(); 
 		long residual = 0; 
 		for (int i = 0; i < n; i++) {
 			residual = residual + soln.get(i)*list.get(i); 
-			//System.out.println("res: " + residual);
 		}
 
 		return Math.abs(residual); 
@@ -60,23 +56,13 @@ public class Partition {
 	}
 
 	
-
+	// Repeated Random Algorithm
 	public long rRand(ArrayList<Long> list) {
 		int n = list.size(); 
-		/*ArrayList<Long> soln1 = new ArrayList<>(); 
-		for (long i = 0; i < n; i++) {
-			double prob = Math.random();
-			if (prob < .5)
-				soln1.add(1);
-			else 
-				soln1.add(-1);
-		}
-		long soln = residue(list, soln1); 
-		*/
+
 		long soln = residue(list, generateSoln(list)); 
 		int max_iteri = 25000; 
 
-		//for (long l = 0; l < Long.MAX_VALUE; l++) {
 		for (long l = 0; l < max_iteri; l++) {
 			// Generates random solution
 			ArrayList<Long> newsoln = new ArrayList<>(); 
@@ -90,24 +76,17 @@ public class Partition {
 			long newsolution = residue(list, newsoln);
 			if (newsolution < soln)
 				soln = newsolution;  
-
-			// not sure if i wanna include this yet	
-			//newsoln.clear();
 		}
 
 		return soln; 
 
 	}
-
+	// Hill Climbing Algorithm
 	public long hillClimb(ArrayList<Long> list) {
 		long n = list.size(); 
 		ArrayList<Long> soln1 = generateSoln(list);
 		long res = residue(list, soln1); 
-		/*System.out.println("The starting residue is: " + res); 
-		System.out.println();
-		for (int i = 0; i < n; i++) {
-			System.out.print(soln1.get(i) + ",");
-		} */
+
 		long max_iteri = 25000; 
 		for (int l = 0; l < max_iteri; l++) {
 			ArrayList<Long> newsoln = soln1;
@@ -117,18 +96,16 @@ public class Partition {
 			// Chnages sign of element at index  
 			newsoln.set(index, val*Long.valueOf(-1)); 
 			
-			//System.out.println("index chosen: " + index);
 			long newresidue = residue(list, newsoln); 
 			if (newresidue < res) {
 				res = newresidue; 
 				soln1 = newsoln; 
 			}
-			//System.out.println("new residue: " + newresidue); 
 		}
-		//System.out.println("final residue: " + res); 
 		return res; 
 	}
 
+	// Simulated Annealing Algorithm
 	public long simA(ArrayList<Long> list) {
 		long n = list.size();
 		ArrayList<Long> startSoln = generateSoln(list); 
@@ -136,14 +113,13 @@ public class Partition {
 		long max_iteri = 1300000; 
 
 		for (int i = 1; i < max_iteri; i++) {
-			//System.out.println("Start residue: " + residue(list, startSoln));
 			ArrayList<Long> newSoln = new ArrayList<Long>(startSoln);
 			// Choose a random index to change the value of
 			int index = (int)(Math.random() * n);
 			long val = newSoln.get(index);
 			// Changes sign of element at index to create neigbor
 			newSoln.set(index, val*Long.valueOf(-1));
-			//System.out.println("New resiude: " + residue(list, newSoln));
+			
 			// Generate probability
 			double prob = Math.exp(-(double)(residue(list, newSoln) - residue(list, startSoln))/(Math.pow(10.0, 10.0)*Math.pow(0.8, Math.floor((double)i/300.0))));
 			double determine = Math.random(); 
@@ -156,74 +132,16 @@ public class Partition {
 			if (residue(list, startSoln) < residue(list, endSoln)) {
 				endSoln = (ArrayList<Long>)startSoln.clone();
 			}
-			//System.out.println("End residue: " + residue(list, endSoln));
 		}
-
 		return residue(list, endSoln);
-		/*long n = list.size(); 
-		ArrayList<Long> soln1 = generateSoln(list);
-		ArrayList<Long> soln1pp = (ArrayList<Long>)soln1.clone();
-		System.out.println("HELPPPPPPPP");
-		//long res = residue(list, soln1); 
-		long max_iteri = 100000;
-
-		for (int i = 0; i < max_iteri; i++) {
-			ArrayList<Long> newsoln = soln1;
-			// Change a random element of soln to generate a "neighbor"
-			int index = (int)(Math.random() * n);
-			long val = newsoln.get(index);
-			// Chnages sign of element at index  
-			newsoln.set(index, val*Long.valueOf(-1));
-			long newresidue = residue(list, newsoln); 
-			System.out.println("residue: " + residue(list, soln1));
-			System.out.println("new residue: " + newresidue); 
-			double prob = Math.exp(-(double)(newresidue - residue(list, soln1))/(Math.pow(10.0,10.0)*Math.pow(0.8, Math.floor(i/300.0))));
-			System.out.println("prob of moving: " + prob);
-			double determine = Math.random(); 
-			System.out.println("determiner: " + determine);
-			if (newresidue < residue(list, soln1)) {
-				//res = newresidue; 
-				soln1 = (ArrayList<Long>)newsoln.clone(); 
-			}
-			else if (prob > determine) {
-				//res = newresidue; 
-				soln1 = (ArrayList<Long>)newsoln.clone(); 
-			}
-
-			if (residue(list, soln1) < residue(list, soln1pp)) {
-				soln1pp = (ArrayList<Long>)soln1.clone(); 
-				//res = residue(list,soln1pp); 
-				System.out.println("true");
-
-			}
-			System.out.println("Res after this round " + residue(list, soln1pp));
-
-
-
-		}
-
-		long finalres = residue(list, soln1pp); 
-		//System.out.println("final residue: " + finalres); 
-		return finalres; */
 	}
 
-
+	// Pre-partition algorithm, takes in a list and a pre-partitioning of
+	// the list and outputs a new list based on the pre-partitioning. 
 	public ArrayList<Long> prePartition(ArrayList<Long> listA, ArrayList<Long> partitionA) {
 		int n = listA.size(); 
-		/*ArrayList<Long> partition = new ArrayList<>(); 
-		for (int i = 0; i < n; i++){
-			int setNumber = (int)(Math.random() * n); 
-			partition.add(Long.valueOf(setNumber));
-		} 
-		ArrayList<Long> newlist = new ArrayList<>(); */
-		/*System.out.println(); 
-		for (int i = 0; i < n; i++) {
-			System.out.print(partition.get(i) + ",");
-		}*/
-
 		for (int i = 0; i < n; i++) {
 			long setS = partitionA.get(i); 
-			//System.out.println("Set visited: " + setS); 
 			if (setS != -1) {
 				long startval = listA.get(i); 
 				partitionA.set(i, (long)-1); 
@@ -232,62 +150,48 @@ public class Partition {
 						startval += listA.get(j); 
 						partitionA.set(j, (long)-1); 
 						listA.set(j, (long)0); 
-						//System.out.println("value: " + startval); 
 					} 
 				}
 				listA.set(i, startval);
-				//newlist.add(startval); 
-
-			}
-			
+			}		
 		}
-		//System.out.println("PRE PARTITIONING"); 
-		for (int i = 0; i < n; i++) {
-		//	System.out.print(listA.get(i) + ",");
-		}
-		//System.out.println();
 		return listA; 
 	}
-
+	
+	// Pre-partitioned Repeated Random Algorithm
 	public long pRRand(ArrayList<Long> list) {
 		int n = list.size(); 
+		// Create random pre-partitioning
 		ArrayList<Long> partition = new ArrayList<>(); 
 		for (int i = 0; i < n; i++){
 			int setNumber = (int)(Math.random() * n); 
 			partition.add(Long.valueOf(setNumber));
 		} 
-
-		//System.out.println(); 
-		for (int i = 0; i < n; i++) {
-			//System.out.print(partition.get(i) + ",");
-		}
 		long max_iteri = 25000;
 
+		// Create copies of lists. Not sure why, but prePartition
+		// algorithm messes destroys lits after use.
 		ArrayList<Long> partitioncopy = new ArrayList<Long>(partition);
 		ArrayList<Long> listcopy = new ArrayList<Long>(list);
 		ArrayList<Long> partitionedlist = prePartition(listcopy, partitioncopy);
 		long res = kk(partitionedlist);
 
 		for (long l = 0; l < max_iteri; l++) {
-			//System.out.println("res " + res);
 			ArrayList<Long> partition2 = new ArrayList<>(); 
 			for (int i = 0; i < n; i++){
 				int setNumber = (int)(Math.random() * n); 
 				partition2.add(Long.valueOf(setNumber));
 			} 
 
-			for (int i = 0; i < n; i++) {
-				//System.out.print(partition2.get(i) + ",");
-			}
-
+			// Create copies of lists. Not sure why, but prePartition
+			// algorithm messes destroys lits after use.
 			ArrayList<Long> partition2copy = new ArrayList<Long>(partition2);
 			ArrayList<Long> listcopy2 = new ArrayList<Long>(list);
 			ArrayList<Long> newpartlist = prePartition(listcopy2, partition2copy);
 			long newres = kk(newpartlist);
-			//System.out.println("new residue: " + newres);
+	
 			if (newres < res){
 				res = newres; 
-				//System.out.println("SWITHC");
 			}
 
 		}
@@ -295,77 +199,63 @@ public class Partition {
 
 		return res; 
 	}
-
+	// Pre-partitioned Hill Climb Algorithm
 	public long pHillClimb(ArrayList<Long> list) {
 		int n = list.size(); 
+
+		// Create random pre-partitioning
 		ArrayList<Long> partition = new ArrayList<>(); 
 		for (int i = 0; i < n; i++){
 			int setNumber = (int)(Math.random() * n); 
 			partition.add(Long.valueOf(setNumber));
 		} 
-		//System.out.println(); 
-		//for (int i = 0; i < n; i++) {
-			//System.out.print(partition.get(i) + ",");
-		//}
 		long max_iteri = 25000;
-		 
+		
+		// Create copies of lists. Not sure why, but prePartition
+		// algorithm messes destroys lits after use.
 		ArrayList<Long> partitioncopy = new ArrayList<Long>(partition);
 		ArrayList<Long> listcopy = new ArrayList<Long>(list);
 		ArrayList<Long> partitionedlist = prePartition(listcopy, partitioncopy);
 		long res = kk(partitionedlist);
 		for (int l = 0; l < max_iteri; l++) {
-			//System.out.println("res " + res);
-
-			
-
+			// Create neighbor
 			ArrayList<Long> partition2 = new ArrayList<Long>(partition);
 
-
+			// Generate random index
 			int index = (int)(Math.random() * n);
 			long setNumber = (long)(Math.random() * n);
-			// Chnages sign of element at index  
-			partition2.set(index, setNumber); 
-			//System.out.println();
-			for (int i = 0; i < n; i++) {
-				//System.out.print(partition2.get(i) + ",");
-			}
-			
-			//System.out.println("index chosen: " + index);
-			
+			// Changes partitioning of one element, creating a neighbor.  
+			partition2.set(index, setNumber); 	
+	
+			// Create copies of lists. Not sure why, but prePartition
+			// algorithm messes destroys lits after use.
 			ArrayList<Long> partition2copy = new ArrayList<Long>(partition2);
 			ArrayList<Long> listcopy2 = new ArrayList<Long>(list);
 			ArrayList<Long> newlist = prePartition(listcopy2, partition2copy);
 
-			//System.out.println("NEW LIST");
-			for (int i = 0; i < n; i++) {
-			//System.out.print(newlist.get(i) + ",");
-			}
 			long newresidue = kk(newlist); 
 			if (newresidue < res) {
 				res = newresidue; 
 			}
-			//System.out.println("new residue: " + newresidue); 
 
 
 		}
-
 		return res;
-		//hillClimb(prePartition(list)); 
 	}
 
+	// Pre-partitioned Simulated Annealing Algorithm
 	public long pSimA(ArrayList<Long> list) {
 		int n = list.size(); 
+		// Creates random pre-partitioning. 
 		ArrayList<Long> partition = new ArrayList<>(); 
 		for (int i = 0; i < n; i++){
 			int setNumber = (int)(Math.random() * n); 
 			partition.add(Long.valueOf(setNumber));
 		} 
-		//System.out.println(); 
-		//for (int i = 0; i < n; i++) {
-			//System.out.print(partition.get(i) + ",");
-		//}
 		long max_iteri = 25000;
 
+		// Create copies of lists. Not sure why, but prePartition
+		// algorithm messes destroys lits after use. 
 		ArrayList<Long> partitioncopy = new ArrayList<Long>(partition);
 		ArrayList<Long> listcopy = new ArrayList<Long>(list);
 		ArrayList<Long> partitionedlist = prePartition(listcopy, partitioncopy);
@@ -376,13 +266,17 @@ public class Partition {
 			ArrayList<Long> partition2 = new ArrayList<Long>(partition);
 			int index = (int)(Math.random() * n);
 			long setNumber = (long)(Math.random() * n);
-			// Chnages sign of element at index  
+			// Changes partitioning of one element, creating a neighbor.   
 			partition2.set(index, setNumber); 
+
+			// Create copies of lists. Not sure why, but prePartition
+			// algorithm messes destroys lits after use. 
 			ArrayList<Long> partition2copy = new ArrayList<Long>(partition2);
 			ArrayList<Long> listcopy2 = new ArrayList<Long>(list);
 			ArrayList<Long> newlist = prePartition(listcopy2, partition2copy);
 			long newresidue = kk(newlist);
 
+			// Probability that we move to less optimal 
 			double prob = Math.exp(-(double)(newresidue - res)/(Math.pow(10.0, 10.0)*Math.pow(0.8, Math.floor((double)l/300.0))));
 			double determine = Math.random(); 
 			if (newresidue < res) {
@@ -395,11 +289,10 @@ public class Partition {
 				rescopy = res; 
 			}
 		}
-
 		return rescopy;
-		//simA(prePartition(list)); 
 	}
 
+		// Used for Task #4 on programming assignment. 
 		public void test() {
 		long kkRes = 0;
 		long rRRes = 0;
@@ -409,6 +302,7 @@ public class Partition {
 		long phCRes = 0;
 		long psARes = 0;
 
+		// Karmarkar Karp
 		long kkST = System.nanoTime(); 
 		for (int i = 0; i < 100; i++) {
 			
@@ -442,7 +336,7 @@ public class Partition {
 		System.out.println("repeated random avg: " + rRRes/100); 
 		System.out.println("rrand elapsed time: " + (rrET - rrST));
 
-		// PP Repeated Random 
+		// Pre-Partitioned Repeated Random 
 		long prrST = System.nanoTime(); 
 		for (int i = 0; i < 100; i++) {
 			
@@ -452,8 +346,7 @@ public class Partition {
 				tester.add(val); 
 			}
 
-			prRRes += pRRand(tester); 
-			
+			prRRes += pRRand(tester); 		
 		}
 		long prrET = System.nanoTime(); 
 		System.out.println("pre-part repeated random avg: " + prRRes/100); 
@@ -469,8 +362,7 @@ public class Partition {
 				tester.add(val); 
 			}
 
-			hCRes +=  hillClimb(tester);
-			
+			hCRes +=  hillClimb(tester);		
 		}
 		long hcET = System.nanoTime(); 
 		System.out.println("hill climb avg: " + hCRes/100);
@@ -486,8 +378,7 @@ public class Partition {
 				tester.add(val); 
 			}
 
-			phCRes += pHillClimb(tester);
-			
+			phCRes += pHillClimb(tester);		
 		}
 		long phcET = System.nanoTime(); 
 		System.out.println("pre-part hill climb avg: " + phCRes/100);
@@ -503,14 +394,13 @@ public class Partition {
 				tester.add(val); 
 			}
 
-			sARes += simA(tester);
-			
+			sARes += simA(tester);		
 		}
 		long saET = System.nanoTime(); 
 		System.out.println("sim annealing avg: " + sARes/100); 
 		System.out.println("sim annealing hill climb elapsed time: " + (saET - saST));
 
-		// PP Sim A 
+		// Pre-Partitioned Simulated Annealing 
 		long psaST = System.nanoTime(); 
 		for (int i = 0; i < 100; i++) {
 			
@@ -520,15 +410,11 @@ public class Partition {
 				tester.add(val); 
 			}
 
-			psARes += pSimA(tester); 
-			
+			psARes += pSimA(tester); 		
 		}
 		long psaET = System.nanoTime(); 
 		System.out.println("pre-part sim annealing avg: " + psARes/100);  
-		System.out.println("pre-part sim annealing hill climb elapsed time: " + (psaET - psaST));
-		
-
-		
+		System.out.println("pre-part sim annealing hill climb elapsed time: " + (psaET - psaST));	
 	}
 
 	public static void main (String [] args) throws FileNotFoundException {
@@ -561,58 +447,7 @@ public class Partition {
    		//else 
    			//System.out.println("Invalid algorithm code"); 
    		System.out.println(test); 
-   		//p.test(); 
-		
+   		//p.test(); 	
 	}
-
-
-	/*public long wasteOfTime(ArrayList<Long> list) {
-		long n = list.size(); 
-		Random rand = new Random(); 
-		long sum1 = 0; 
-		long sum2 = 0; 
-		long i, j; 
-		while (list.isEmpty() == false) {
-			if (n == 1) {
-				double prob = Math.random();
-				if (prob < .5) {
-					sum1 += list.indexOf(0);
-				}
-				else {
-					sum2 += list.indexOf(0);
-				}
-				list.remove(0);
-			}
-			else {
-				i = rand.nextInt(n-1); 
-				j = rand.nextInt(n-1); 
-				while (i == j)  {
-					j = rand.nextInt(n-1); 
-				}
-
-				// Put Long at index i in array 1 
-				sum1 += list.indexOf(i); 
-				// Empty spot at i in arraylist
-				list.remove(i); 
-
-				double prob = Math.random();
-				if (prob < .5) {
-					sum1 += list.indexOf(j);
-				}
-				else {
-					sum2 += list.indexOf(j);
-				}
-				list.remove(j); 
-				n = list.size(); 
-			}
-			// generate 2 random numbes
-			// check if they are not equal 
-			// if they are equal switch one of them 
-			// check if both of them have value -1 
-			// if either one does, then choose a different one 
-		}
-		long residual = Math.abs(sum2 - sum1); 
-		return residual; 
-	} */
 }
 
